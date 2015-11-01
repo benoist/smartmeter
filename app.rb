@@ -37,7 +37,7 @@ while @running do
 
     if last_measurement
       if measurement.measured_at - last_sample.measured_at >= ENV["INTERVAL"].to_i
-        p AppMonit::Event.create "measurement", measurement.stat(last_sample)
+        AppMonit::Event.create "measurement", measurement.stat(last_sample)
         last_sample = measurement
       end
     else

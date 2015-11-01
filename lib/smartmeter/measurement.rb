@@ -21,7 +21,7 @@ module Smartmeter
     end
 
     point :meter_id, '0-0:96.1.1', ->(value) { value.scan(/\d+/).first.to_s }
-    point :measured_at, '0-0:1.0.0', ->(value) { Time.strptime(value.scan(/\d+S/).first, "%y%m%d%H%M%SS") }
+    point :measured_at, '0-0:1.0.0', ->(value) { Time.strptime(value.scan(/\d+/).first, "%y%m%d%H%M%S") }
 
     point :total_usage_low, '1-0:1.8.1', ->(value) { value.scan(/\d+\.\d+/).first.to_f }
     point :total_usage_normal, '1-0:1.8.2', ->(value) { value.scan(/\d+\.\d+/).first.to_f }
