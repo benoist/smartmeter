@@ -26,24 +26,28 @@ last_measurement = nil
 trap(:INT) { @running = false }
 
 while @running do
-  lines = []
-  while (line = sp.readline.chomp) do # see note 2
-    lines << line
-    break if line.start_with? "!"
-  end
+  begin
+    lines = []
+    while (line = sp.readline.chomp) do # see note 2
+      lines << line
+      break if line.start_with? "!"
+    end
 
-  measurement = Smartmeter::Measurement.parse(lines)
+    measurement = Smartmeter::Measurement.parse(lines)
 
-  if last_measurement
-    if measurement.measured_at - last_sample.measured_at >= ENV["INTERVAL"].to_i
-      p AppMonit::Event.create "measurement", measurement.stat(last_sample)
+    if last_measurement
+      if measurement.measured_at - last_sample.measured_at >= ENV["INTERVAL"].to_i
+        p AppMonit::Event.create "measurement", measurement.stat(last_sample)
+        last_sample = measurement
+      end
+    else
       last_sample = measurement
     end
-  else
-    last_sample = measurement
-  end
 
-  last_measurement = measurement
+    last_measurement = measurement
+  rescue Exception => e
+    puts e.message
+  end
 end
 
 sp.close
