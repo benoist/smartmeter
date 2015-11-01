@@ -9,7 +9,7 @@ require "smartmeter/measurement"
 AppMonit::Config.api_key   = ENV["API_KEY"]
 AppMonit::Config.env       = ENV["ENVIRONMENT"] || "development"
 AppMonit::Config.log_level = ENV["LOGGING"] == 'error' ? Logger::ERROR : Logger::DEBUG
-AppMonit::Config.async     = ENV["ASYNC"] == "true"
+AppMonit::Config.async     = ENV["ASYNC"] != "false"
 
 port_str  = ENV["USB_PORT"] || "/dev/slave"
 baud_rate = 115200
@@ -36,7 +36,7 @@ while @running do
 
   if last_measurement
     if measurement.measured_at - last_sample.measured_at >= ENV["INTERVAL"].to_i
-      AppMonit::Event.create "measurement", measurement.stat(last_sample)
+      p AppMonit::Event.create "measurement", measurement.stat(last_sample)
       last_sample = measurement
     end
   else
